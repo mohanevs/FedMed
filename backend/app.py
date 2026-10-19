@@ -127,3 +127,8 @@ def create_app(config: BackendConfig = None) -> FastAPI:
 
 # Default application instance for ASGI servers (uvicorn backend.app:app)
 app = create_app()
+
+if __name__ == "__main__":
+    import uvicorn
+    cfg = get_backend_config()
+    uvicorn.run("backend.app:app", host=cfg.host, port=cfg.port, reload=True)

@@ -20,39 +20,39 @@ if str(repo_root) not in sys.path:
 
 TEST_MODULES = [
     # 1. 3D U-Net Model & Weights
-    ("3D U-Net Architecture", "federation.models.test_unet3d"),
+    ("3D U-Net Architecture", "tests.federation.test_unet3d"),
     # 2. MRI Data Transforms & Partitioner
-    ("Data Pipeline & Partitioner", "federation.datasets.test_mri_data"),
+    ("Data Pipeline & Partitioner", "tests.federation.test_mri_data"),
     # 3. Training Loops, Loss & Metrics
-    ("Trainer & Loss Functions", "federation.models.test_trainer"),
+    ("Trainer & Loss Functions", "tests.federation.test_trainer"),
     # 4. Flower Client (NumPyClient)
-    ("FedMedClient Core", "federation.client.test_client"),
+    ("FedMedClient Core", "tests.federation.test_client"),
     # 5. Local Checkpointing & Diffing
-    ("Client Checkpoint & Fallback", "federation.client.test_checkpoint"),
+    ("Client Checkpoint & Fallback", "tests.federation.test_checkpoint"),
     # 6. Client CLI Runner & Hardware Inspection
-    ("Client Runner & Hardware", "federation.client.test_run_client"),
+    ("Client Runner & Hardware", "tests.federation.test_run_client"),
     # 7. Baseline Server Coordinator
-    ("FedAvg Server Baseline", "federation.server.test_server"),
+    ("FedAvg Server Baseline", "tests.federation.test_server"),
     # 8. FedMedStrategy Weighted Aggregation
-    ("FedMedStrategy Aggregation", "federation.server.test_strategy"),
+    ("FedMedStrategy Aggregation", "tests.federation.test_strategy"),
     # 9. Global Model Checkpointing & Versioning
-    ("Global Model Manager", "federation.server.test_model_manager"),
+    ("Global Model Manager", "tests.federation.test_model_manager"),
     # 10. Multi-Hospital Simulation Harness
-    ("Simulation Testbed", "federation.test_simulate"),
+    ("Simulation Testbed", "tests.federation.test_simulate"),
     # 11. Parameter Encryption & DP
-    ("TenSEAL & Differential Privacy", "federation.security.test_encryption"),
+    ("TenSEAL & Differential Privacy", "tests.federation.test_encryption"),
     # 12. Concurrency Locks & Synchronization
-    ("Round Sync & Locks", "federation.server.test_sync_manager"),
+    ("Round Sync & Locks", "tests.federation.test_sync_manager"),
     # 13. Auto-Dispatch & Auto-Aggregate Triggers
-    ("Automated Triggers", "federation.server.test_triggers"),
+    ("Automated Triggers", "tests.federation.test_triggers"),
     # 14. API Bridge & JSON Telemetry
-    ("API Bridge & Telemetry", "federation.test_api_bridge"),
+    ("API Bridge & Telemetry", "tests.federation.test_api_bridge"),
     # 15. Global Model Weight Encryption & HMAC Signatures
-    ("Global Model Weight Encryption", "federation.security.test_global_encryption"),
+    ("Global Model Weight Encryption", "tests.federation.test_global_encryption"),
     # 16. Complete FastAPI Backend & Telemetry Routes
-    ("Production FastAPI Backend", "backend.test_backend"),
+    ("Production FastAPI Backend", "tests.backend.test_backend"),
     # 17. Relational Database, JWT Auth & RBAC
-    ("Relational DB & JWT RBAC Auth", "backend.test_auth_db"),
+    ("Relational DB & JWT RBAC Auth", "tests.backend.test_auth_db"),
 ]
 
 

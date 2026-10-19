@@ -96,6 +96,6 @@ def export_hospital_key(
         cipher="AES-256-GCM",
         instructions=(
             f"Use this 256-bit symmetric key to decrypt global model weights for {hospital_id}. "
-            "Supply via --decrypt-key CLI argument when starting start_client.py."
+            "Supply via --decrypt-key CLI argument when starting backend/scripts/start_client.py."
         ),
     )

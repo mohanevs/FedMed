@@ -45,13 +45,13 @@ Start the Flower coordination server listening on port `8080` with automated dis
 
 ```bash
 # Launch server with FedMedStrategy, 10 rounds, min 2 clients
-python start_server.py --host 127.0.0.1 --port 8080 --rounds 10 --min-clients 2
+python backend/scripts/start_server.py --host 127.0.0.1 --port 8080 --rounds 10 --min-clients 2
 
 # Fast offline dry-run self-test
-python start_server.py --dry-run
+python backend/scripts/start_server.py --dry-run
 ```
 
-**Key Arguments for `start_server.py`:**
+**Key Arguments for `backend/scripts/start_server.py`:**
 - `--host` (default: `127.0.0.1`): Server binding IP.
 - `--port` (default: `8080`): Listening port for Flower gRPC connections.
 - `--rounds` (default: `10`): Number of federated training rounds.
@@ -66,16 +66,16 @@ Launch a hospital worker node pointing to its local dataset folder:
 
 ```bash
 # Hospital A Node
-python start_client.py --hospital-id hospital_a --data-dir ./data/hospital_a --server 127.0.0.1:8080 --epochs 1
+python backend/scripts/start_client.py --hospital-id hospital_a --data-dir ./data/hospital_a --server 127.0.0.1:8080 --epochs 1
 
 # Hospital B Node
-python start_client.py --hospital-id hospital_b --data-dir ./data/hospital_b --server 127.0.0.1:8080 --epochs 1
+python backend/scripts/start_client.py --hospital-id hospital_b --data-dir ./data/hospital_b --server 127.0.0.1:8080 --epochs 1
 
 # Fast offline dry-run self-test
-python start_client.py --hospital-id hospital_a --dry-run
+python backend/scripts/start_client.py --hospital-id hospital_a --dry-run
 ```
 
-**Key Arguments for `start_client.py`:**
+**Key Arguments for `backend/scripts/start_client.py`:**
 - `--hospital-id`: Unique identifier (e.g. `hospital_a`, `hospital_b`, `hospital_c`).
 - `--data-dir`: Local folder containing volumetric MRI scans (`.npy`, `.npz`, `.nii.gz`).
 - `--server`: Coordinator address (`<host>:<port>`).
