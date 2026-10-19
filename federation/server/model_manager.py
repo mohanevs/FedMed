@@ -429,7 +429,8 @@ class GlobalModelManager:
             bundle_bytes = f.read()
 
         state_dict, metadata = self.encryption_manager.decrypt_state_dict(bundle_bytes, device=device)
-        target_model.load_state_dict(state_dict)
+        weights = state_dict.get("model_state_dict", state_dict) if isinstance(state_dict, dict) and "model_state_dict" in state_dict else state_dict
+        target_model.load_state_dict(weights)
 
         ckpt_info = {
             "round": metadata.round_num,

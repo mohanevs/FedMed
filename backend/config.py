@@ -34,6 +34,11 @@ class BackendConfig:
         "relational database persistence (SQLite/MySQL), role-based authentication, and automated triggers."
     )
 
+    def __post_init__(self) -> None:
+        self.checkpoint_dir = Path(self.checkpoint_dir)
+        self.logs_dir = Path(self.logs_dir)
+        self.data_dir = Path(self.data_dir)
+
 
 def get_backend_config() -> BackendConfig:
     """Instantiate and return backend configuration."""

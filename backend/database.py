@@ -277,8 +277,7 @@ def get_db_engine(db_url: Optional[str] = None):
             max_overflow=20,
         )
 
-    if db_url is None:
-        _engine = engine
+    _engine = engine
     return engine
 
 
@@ -336,6 +335,65 @@ def seed_default_data(db: Session) -> None:
         )
         db.add(admin)
         logger.info("  * Seeded default Coordinator Admin user (admin)")
+
+    # 2. Seed Default Hospital Nodes (A, B, C)
+    default_nodes = [
+        ("NODE-HOSP-A", "Hospital Alpha Medical Center", "North America", "./data/hospital_a", "fedmed_node_key_hospital_a_2026"),
+        ("NODE-HOSP-B", "Hospital Beta General", "Europe", "./data/hospital_b", "fedmed_node_key_hospital_b_2026"),
+        ("NODE-HOSP-C", "Hospital Gamma Clinic", "Asia-Pacific", "./data/hospital_c", "fedmed_node_key_hospital_c_2026"),
+    ]
+    for node_id, hosp_name, region, ds_path, api_key in default_nodes:
+        existing_node = db.query(HospitalNode).filter(HospitalNode.node_id == node_id).first()
+        if not existing_node:
+            node = HospitalNode(
+                node_id=node_id,
+                hospital_name=hosp_name,
+                region=region,
+                api_key=api_key,
+                status=NodeStatus.ONLINE,
+                dataset_path=ds_path,
+                local_sample_count=50,
+                last_heartbeat=datetime.now(timezone.utc),
+                registered_at=datetime.now(timezone.utc),
+            )
+            db.add(node)
+            logger.info(f"  * Seeded default Hospital Node: {node_id} ({hosp_name})")
+
+    # 3. Seed Hospital Staff user (hosp_a_lead)
+    staff_user = db.query(User).filter(User.username == "hosp_a_lead").first()
+    if not staff_user:
+        p_hash, p_salt = hash_password("HospA@FedMed2026!")
+        staff = User(
+            user_id="USER-HOSP-A-001",
+            username="hosp_a_lead",
+            email="hosp_a@fedmed.ai",
+            password_hash=p_hash,
+            salt=p_salt,
+            role=UserRole.HOSPITAL_STAFF,
+            institution_name="Hospital Alpha Medical Center",
+            hospital_node_id="NODE-HOSP-A",
+            is_active=True,
+        )
+        db.add(staff)
+        logger.info("  * Seeded default Hospital Staff user (hosp_a_lead)")
+
+    # 4. Seed Auditor user (auditor)
+    auditor_user = db.query(User).filter(User.username == "auditor").first()
+    if not auditor_user:
+        p_hash, p_salt = hash_password("Audit@FedMed2026!")
+        auditor = User(
+            user_id="USER-AUDIT-001",
+            username="auditor",
+            email="auditor@fedmed.ai",
+            password_hash=p_hash,
+            salt=p_salt,
+            role=UserRole.AUDITOR,
+            institution_name="Independent Compliance & Privacy Auditor",
+            hospital_node_id=None,
+            is_active=True,
+        )
+        db.add(auditor)
+        logger.info("  * Seeded default Auditor user (auditor)")
 
     db.commit()
 

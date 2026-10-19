@@ -138,6 +138,16 @@ class FedMedAPIBridge:
         except Exception:
             pass
 
+        if len(hospitals) < 3:
+            default_hospitals = [
+                {"hospital_id": "hospital_a", "institution_name": "Hospital Alpha", "region": "North America", "status": "ONLINE", "latest_round": 0, "best_local_dice": 0.0, "last_update": None},
+                {"hospital_id": "hospital_b", "institution_name": "Hospital Beta", "region": "Europe", "status": "ONLINE", "latest_round": 0, "best_local_dice": 0.0, "last_update": None},
+                {"hospital_id": "hospital_c", "institution_name": "Hospital Gamma", "region": "Asia-Pacific", "status": "ONLINE", "latest_round": 0, "best_local_dice": 0.0, "last_update": None},
+            ]
+            for dh in default_hospitals:
+                if dh["hospital_id"] not in hospitals:
+                    hospitals[dh["hospital_id"]] = dh
+
         return list(hospitals.values())
 
     def get_hospital_history(self, hospital_id: str) -> Dict[str, Any]:

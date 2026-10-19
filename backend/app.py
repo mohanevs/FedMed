@@ -6,13 +6,14 @@ and mounts all REST and WebSocket API routers.
 
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import AsyncGenerator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.config import BackendConfig, get_backend_config
-from backend.database import init_db
+from backend.database import get_db_engine, init_db
 from backend.dependencies import BackendServices
 from backend.routes import (
     auth_router,
@@ -35,13 +36,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("=" * 65)
     logger.info("  Starting FedMed Backend Server")
     logger.info(f"  * Database       : {cfg.database_url}")
-    logger.info(f"  * Checkpoint Dir : {cfg.checkpoint_dir.resolve()}")
-    logger.info(f"  * Logs & Feeds   : {cfg.logs_dir.resolve()}")
+    logger.info(f"  * Checkpoint Dir : {Path(cfg.checkpoint_dir).resolve()}")
+    logger.info(f"  * Logs & Feeds   : {Path(cfg.logs_dir).resolve()}")
     logger.info(f"  * API Docs       : /docs and /redoc")
     logger.info("=" * 65)
 
     # Initialize relational database schemas and default seed accounts
-    init_db()
+    init_db(get_db_engine(cfg.database_url))
 
     # Initialize backend services singleton
     services = BackendServices.get_instance(cfg)

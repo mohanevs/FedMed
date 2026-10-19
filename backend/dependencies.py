@@ -212,7 +212,11 @@ class BackendServices:
                 node = db.query(HospitalNode).filter(HospitalNode.node_id == h_id).first()
                 if node:
                     node.last_heartbeat = now_dt
-                    node.status = NodeStatus.ONLINE
+                    req_status = hb_data.get("status", "ONLINE")
+                    if hasattr(NodeStatus, str(req_status)):
+                        node.status = NodeStatus[str(req_status)]
+                    else:
+                        node.status = NodeStatus.ONLINE
                     db.commit()
         except Exception as e:
             self.logger.debug(f"Heartbeat DB update error: {e}")
@@ -290,7 +294,8 @@ class BackendServices:
                     except Exception:
                         pass
 
-                cur_status = "ONLINE" if reg_is_active else "OFFLINE"
+                reported_status = reg.get("status", "ONLINE")
+                cur_status = reported_status if reg_is_active else "OFFLINE"
                 reg["status"] = cur_status
                 reg["is_active"] = reg_is_active
 

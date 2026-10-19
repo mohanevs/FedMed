@@ -47,6 +47,7 @@ class TestBackendAPI(unittest.TestCase):
 
         # Reset singleton instance for isolated test
         BackendServices._instance = None
+        BackendServices.get_instance(self.config)
         self.app = create_app(self.config)
         self.client = TestClient(self.app)
 

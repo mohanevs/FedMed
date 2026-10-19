@@ -76,43 +76,43 @@ def main() -> None:
             # Test root
             r_root = client.get("/")
             assert r_root.status_code == 200, f"Root returned {r_root.status_code}"
-            logger.info("  [✓] Root & metadata endpoint verified")
+            logger.info("  [OK] Root & metadata endpoint verified")
 
             # Test health
             r_health = client.get("/health")
             assert r_health.status_code == 200, f"Health returned {r_health.status_code}"
-            logger.info("  [✓] Health check endpoint verified")
+            logger.info("  [OK] Health check endpoint verified")
 
             # Test dashboard
             r_dash = client.get("/api/federation/dashboard")
             assert r_dash.status_code == 200, f"Dashboard returned {r_dash.status_code}"
-            logger.info("  [✓] Federation dashboard endpoint verified")
+            logger.info("  [OK] Federation dashboard endpoint verified")
 
             # Test security
             r_sec = client.get("/api/security/status")
             assert r_sec.status_code == 200, f"Security returned {r_sec.status_code}"
-            logger.info(f"  [✓] Security endpoint verified (Key ID: {r_sec.json().get('global_weight_encryption', {}).get('key_id')})")
+            logger.info(f"  [OK] Security endpoint verified (Key ID: {r_sec.json().get('global_weight_encryption', {}).get('key_id')})")
 
             # Test hospitals
             r_hosp = client.get("/api/hospitals")
             assert r_hosp.status_code == 200, f"Hospitals returned {r_hosp.status_code}"
-            logger.info(f"  [✓] Hospital registry verified ({len(r_hosp.json())} nodes detected)")
+            logger.info(f"  [OK] Hospital registry verified ({len(r_hosp.json())} nodes detected)")
 
             # Test database & JWT authentication
             r_login = client.post("/api/auth/login", json={"username": "admin", "password": "Admin@FedMed2026!"})
             assert r_login.status_code == 200, f"Auth login failed: {r_login.text}"
             token = r_login.json()["access_token"]
-            logger.info("  [✓] Database & JWT login verified (Admin user authenticated)")
+            logger.info("  [OK] Database & JWT login verified (Admin user authenticated)")
 
             # Test authenticated /me
             r_me = client.get("/api/auth/me", headers={"Authorization": f"Bearer {token}"})
             assert r_me.status_code == 200, f"Auth /me failed: {r_me.text}"
-            logger.info(f"  [✓] RBAC Profile verified: {r_me.json()['username']} ({r_me.json()['role']})")
+            logger.info(f"  [OK] RBAC Profile verified: {r_me.json()['username']} ({r_me.json()['role']})")
 
             # Test hospital node registry
             r_nodes = client.get("/api/auth/nodes")
             assert r_nodes.status_code == 200, f"Auth nodes failed: {r_nodes.text}"
-            logger.info(f"  [✓] Database Hospital Nodes verified ({r_nodes.json()['total']} registered nodes)")
+            logger.info(f"  [OK] Database Hospital Nodes verified ({r_nodes.json()['total']} registered nodes)")
 
             logger.info("[Dry Run] All backend routes and database schemas validated successfully! (0 Errors)")
             return
