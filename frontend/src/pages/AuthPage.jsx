@@ -153,7 +153,7 @@ export function AuthPage({ onNavigate }) {
         style={{
           width: "100%",
           maxWidth: "400px",
-          background: "#ffffff",
+          background: "var(--bg-surface, #ffffff)",
           border: "1px solid var(--border-subtle, #e2e8f0)",
           borderRadius: "var(--radius-xl, 20px)",
           padding: "2rem",

@@ -274,7 +274,7 @@ export function HospitalPortal({ onNavigate }) {
           ==================================================================== */}
       <div
         style={{
-          background: "#ffffff",
+          background: "var(--bg-surface, #ffffff)",
           border: "1px solid var(--border-subtle, #e2e8f0)",
           borderRadius: "var(--radius-xl, 20px)",
           padding: "1.5rem 1.75rem",
@@ -379,7 +379,7 @@ export function HospitalPortal({ onNavigate }) {
       {isHospitalOperator && (
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "2px solid var(--emerald-border, #a7f3d0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.75rem",
@@ -650,13 +650,13 @@ export function HospitalPortal({ onNavigate }) {
                       readOnly
                       value={2}
                       className="form-input"
-                      style={{ padding: "0.35rem 0.5rem", fontSize: "0.82rem", background: "#f1f5f9" }}
+                      style={{ padding: "0.35rem 0.5rem", fontSize: "0.82rem", background: "var(--bg-subtle, #f1f5f9)" }}
                     />
                   </div>
                 </div>
 
                 {trainingState === "TRAINING_ACTIVE" && (
-                  <div style={{ background: "#ffffff", padding: "0.5rem", borderRadius: "8px", border: "1px solid #e2e8f0", fontSize: "0.75rem" }}>
+                  <div style={{ background: "var(--bg-surface, #ffffff)", padding: "0.5rem", borderRadius: "8px", border: "1px solid var(--border-subtle, #e2e8f0)", fontSize: "0.75rem" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", color: "var(--text-secondary, #334155)" }}>
                       <span>Loss: <strong style={{ color: "var(--coral-primary, #ef4444)" }}>{currentLoss.toFixed(4)}</strong></span>
                       <span>Dice: <strong style={{ color: "var(--emerald-light, #059669)" }}>{(currentDice * 100).toFixed(1)}%</strong></span>
@@ -799,7 +799,7 @@ export function HospitalPortal({ onNavigate }) {
             style={{
               padding: "2.5rem 1.5rem",
               textAlign: "center",
-              background: "#ffffff",
+              background: "var(--bg-card, #ffffff)",
               borderRadius: "var(--radius-xl, 20px)",
               border: "1px dashed var(--border-subtle, #e2e8f0)",
               color: "var(--text-muted, #64748b)",
@@ -821,7 +821,7 @@ export function HospitalPortal({ onNavigate }) {
                 <div
                   key={h.node_id || i}
                   style={{
-                    background: "#ffffff",
+                    background: "var(--bg-card, #ffffff)",
                     border: `1px solid ${isUserOwnNode ? "var(--emerald-border, #a7f3d0)" : "var(--border-subtle, #e2e8f0)"}`,
                     borderRadius: "var(--radius-xl, 20px)",
                     padding: "1.5rem",

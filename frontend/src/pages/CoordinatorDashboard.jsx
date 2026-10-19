@@ -164,7 +164,7 @@ export function CoordinatorDashboard({ onNavigate }) {
       {/* Top Banner & Header */}
       <div
         style={{
-          background: "#ffffff",
+          background: "var(--bg-surface, #ffffff)",
           border: "1px solid var(--border-subtle, #e2e8f0)",
           borderRadius: "var(--radius-xl, 20px)",
           padding: "1.5rem 1.75rem",
@@ -291,7 +291,7 @@ export function CoordinatorDashboard({ onNavigate }) {
       {isCoordinatorAdmin && (
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "2px solid var(--brand-blue-border, #d2e3fc)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.75rem",
@@ -421,7 +421,7 @@ export function CoordinatorDashboard({ onNavigate }) {
               </label>
               <div
                 style={{
-                  background: "#ffffff",
+                  background: "var(--bg-surface, #ffffff)",
                   border: "1px solid var(--border-subtle, #e2e8f0)",
                   borderRadius: "var(--radius-md, 12px)",
                   padding: "0.5rem 0.85rem",
@@ -456,7 +456,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* KPI 1 */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.5rem",
@@ -483,7 +483,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* KPI 2 */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.5rem",
@@ -509,7 +509,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* KPI 3 */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.5rem",
@@ -542,7 +542,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* KPI 4 */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.5rem",
@@ -574,7 +574,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* CHART 1: LINE GRAPH (Dice Convergence Over Rounds) */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.75rem",
@@ -754,7 +754,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* CHART 2: BAR PLOT (Hospital Performance Comparison) */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.75rem",
@@ -860,7 +860,7 @@ export function CoordinatorDashboard({ onNavigate }) {
         {/* CHART 3: DONUT / PIE CHART (Tumor Sub-Region Distribution) */}
         <div
           style={{
-            background: "#ffffff",
+            background: "var(--bg-card, #ffffff)",
             border: "1px solid var(--border-subtle, #e2e8f0)",
             borderRadius: "var(--radius-xl, 20px)",
             padding: "1.75rem",
@@ -986,7 +986,7 @@ export function CoordinatorDashboard({ onNavigate }) {
           ==================================================================== */}
       <div
         style={{
-          background: "#ffffff",
+          background: "var(--bg-card, #ffffff)",
           border: "1px solid var(--border-subtle, #e2e8f0)",
           borderRadius: "var(--radius-xl, 20px)",
           padding: "1.75rem",
@@ -1056,7 +1056,7 @@ export function CoordinatorDashboard({ onNavigate }) {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ padding: "0.35rem", borderRadius: "8px", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
+                      <span style={{ padding: "0.35rem", borderRadius: "8px", background: "var(--bg-surface, #ffffff)", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
                         <IconHospital size={16} />
                       </span>
                       <div>

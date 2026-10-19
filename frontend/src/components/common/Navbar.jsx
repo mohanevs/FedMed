@@ -6,7 +6,10 @@ import {
   IconShieldCheck,
   IconServer,
   IconLock,
+  IconSun,
+  IconMoon,
 } from "./Icons";
+import { useTheme } from "../../context/ThemeContext";
 
 export function Navbar({
   activeTab,
@@ -15,6 +18,8 @@ export function Navbar({
   onLogout,
   isBackendConnected = true,
 }) {
+  const { theme, toggleTheme, isDark } = useTheme();
+
   return (
     <header className="antigravity-navbar">
       <div className="antigravity-navbar-inner">
@@ -73,7 +78,7 @@ export function Navbar({
           </button>
         </nav>
 
-        {/* Very Right End: Action / User Authentication Button */}
+        {/* Very Right End: Action / User Authentication Button & Dark Mode Toggle */}
         <div className="navbar-right-actions">
           {currentUser ? (
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
@@ -97,8 +102,26 @@ export function Navbar({
               <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>&rarr;</span>
             </button>
           )}
+
+          {/* Theme Toggle Button at the Corner Right */}
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span className="theme-icon-anim" key={theme}>
+              {isDark ? (
+                <IconMoon size={18} className="theme-icon-moon" />
+              ) : (
+                <IconSun size={18} className="theme-icon-sun" />
+              )}
+            </span>
+          </button>
         </div>
       </div>
     </header>
   );
 }
+

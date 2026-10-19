@@ -148,7 +148,7 @@ export function AboutUsPage({ onNavigate }) {
             <div
               key={idx}
               style={{
-                background: "#ffffff",
+                background: "var(--bg-card, #ffffff)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: "var(--radius-xl)",
                 padding: "1.75rem",
