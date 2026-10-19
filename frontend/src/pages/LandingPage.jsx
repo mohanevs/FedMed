@@ -290,20 +290,7 @@ export function LandingPage({ onNavigate }) {
           4. CALL TO ACTION / WORKSPACE LAUNCH BANNER
           Clean, minimal card inviting clinical researchers to test or deploy
           ==================================================================== */}
-      <section
-        style={{
-          margin: "4rem 0 2rem",
-          background: "linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%)",
-          border: "1px solid var(--border-subtle)",
-          borderRadius: "var(--radius-2xl)",
-          padding: "3.5rem 2rem",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "1.25rem",
-        }}
-      >
+      <section className="landing-cta-banner">
         <div className="section-tag-pill brand">
           <span>Get Started Today</span>
         </div>

@@ -270,13 +270,13 @@ export function AuthPage({ onNavigate }) {
                 style={{
                   padding: "0.48rem 0.75rem",
                   borderRadius: "var(--radius-sm, 7px)",
-                  border: "none",
+                  border: tab === "login" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                   cursor: "pointer",
                   fontSize: "0.88rem",
                   fontWeight: 600,
                   fontFamily: "var(--font-sans, sans-serif)",
-                  background: tab === "login" ? "#ffffff" : "transparent",
-                  color: tab === "login" ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
+                  background: tab === "login" ? "var(--bg-surface, #ffffff)" : "transparent",
+                  color: tab === "login" ? "var(--brand-blue, #1a73e8)" : "var(--text-muted, #64748b)",
                   boxShadow: tab === "login" ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
                   transition: "all var(--transition-fast, 150ms)",
                 }}
@@ -293,13 +293,13 @@ export function AuthPage({ onNavigate }) {
                 style={{
                   padding: "0.48rem 0.75rem",
                   borderRadius: "var(--radius-sm, 7px)",
-                  border: "none",
+                  border: tab === "register" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                   cursor: "pointer",
                   fontSize: "0.88rem",
                   fontWeight: 600,
                   fontFamily: "var(--font-sans, sans-serif)",
-                  background: tab === "register" ? "#ffffff" : "transparent",
-                  color: tab === "register" ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
+                  background: tab === "register" ? "var(--bg-surface, #ffffff)" : "transparent",
+                  color: tab === "register" ? "var(--brand-blue, #1a73e8)" : "var(--text-muted, #64748b)",
                   boxShadow: tab === "register" ? "0 1px 3px rgba(0,0,0,0.06)" : "none",
                   transition: "all var(--transition-fast, 150ms)",
                 }}

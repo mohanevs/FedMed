@@ -599,14 +599,14 @@ export function CoordinatorDashboard({ onNavigate }) {
                 type="button"
                 onClick={() => setActiveMetricFilter("all")}
                 style={{
-                  border: "none",
+                  border: activeMetricFilter === "all" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                   padding: "0.25rem 0.55rem",
                   borderRadius: "6px",
                   fontSize: "0.75rem",
                   fontWeight: 600,
                   cursor: "pointer",
-                  background: activeMetricFilter === "all" ? "#ffffff" : "transparent",
-                  color: activeMetricFilter === "all" ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
+                  background: activeMetricFilter === "all" ? "var(--bg-surface, #ffffff)" : "transparent",
+                  color: activeMetricFilter === "all" ? "var(--brand-blue, #1a73e8)" : "var(--text-muted, #64748b)",
                   boxShadow: activeMetricFilter === "all" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
                 }}
               >
@@ -616,13 +616,13 @@ export function CoordinatorDashboard({ onNavigate }) {
                 type="button"
                 onClick={() => setActiveMetricFilter("dice")}
                 style={{
-                  border: "none",
+                  border: activeMetricFilter === "dice" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                   padding: "0.25rem 0.55rem",
                   borderRadius: "6px",
                   fontSize: "0.75rem",
                   fontWeight: 600,
                   cursor: "pointer",
-                  background: activeMetricFilter === "dice" ? "#ffffff" : "transparent",
+                  background: activeMetricFilter === "dice" ? "var(--bg-surface, #ffffff)" : "transparent",
                   color: activeMetricFilter === "dice" ? "var(--brand-blue, #1a73e8)" : "var(--text-muted, #64748b)",
                   boxShadow: activeMetricFilter === "dice" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
                 }}
@@ -633,13 +633,13 @@ export function CoordinatorDashboard({ onNavigate }) {
                 type="button"
                 onClick={() => setActiveMetricFilter("loss")}
                 style={{
-                  border: "none",
+                  border: activeMetricFilter === "loss" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                   padding: "0.25rem 0.55rem",
                   borderRadius: "6px",
                   fontSize: "0.75rem",
                   fontWeight: 600,
                   cursor: "pointer",
-                  background: activeMetricFilter === "loss" ? "#ffffff" : "transparent",
+                  background: activeMetricFilter === "loss" ? "var(--bg-surface, #ffffff)" : "transparent",
                   color: activeMetricFilter === "loss" ? "var(--coral-primary, #ef4444)" : "var(--text-muted, #64748b)",
                   boxShadow: activeMetricFilter === "loss" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
                 }}

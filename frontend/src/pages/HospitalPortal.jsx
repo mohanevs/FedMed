@@ -760,14 +760,14 @@ export function HospitalPortal({ onNavigate }) {
               type="button"
               onClick={() => setSelectedNodeFilter("all")}
               style={{
-                border: "none",
+                border: selectedNodeFilter === "all" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                 padding: "0.25rem 0.65rem",
                 borderRadius: "6px",
                 fontSize: "0.75rem",
                 fontWeight: 600,
                 cursor: "pointer",
-                background: selectedNodeFilter === "all" ? "#ffffff" : "transparent",
-                color: selectedNodeFilter === "all" ? "var(--text-primary, #0f172a)" : "var(--text-muted, #64748b)",
+                background: selectedNodeFilter === "all" ? "var(--bg-surface, #ffffff)" : "transparent",
+                color: selectedNodeFilter === "all" ? "var(--brand-blue, #1a73e8)" : "var(--text-muted, #64748b)",
                 boxShadow: selectedNodeFilter === "all" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
               }}
             >
@@ -777,13 +777,13 @@ export function HospitalPortal({ onNavigate }) {
               type="button"
               onClick={() => setSelectedNodeFilter("ONLINE")}
               style={{
-                border: "none",
+                border: selectedNodeFilter === "ONLINE" ? "1px solid var(--border-medium, #e2e8f0)" : "1px solid transparent",
                 padding: "0.25rem 0.65rem",
                 borderRadius: "6px",
                 fontSize: "0.75rem",
                 fontWeight: 600,
                 cursor: "pointer",
-                background: selectedNodeFilter === "ONLINE" ? "#ffffff" : "transparent",
+                background: selectedNodeFilter === "ONLINE" ? "var(--bg-surface, #ffffff)" : "transparent",
                 color: selectedNodeFilter === "ONLINE" ? "var(--emerald-light, #059669)" : "var(--text-muted, #64748b)",
                 boxShadow: selectedNodeFilter === "ONLINE" ? "0 1px 2px rgba(0,0,0,0.05)" : "none",
               }}
