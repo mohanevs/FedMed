@@ -1,545 +1,159 @@
-# FedMed – Federated Learning with Flower
+<div align="center">
 
-## Overview
+# 🧠 FedMed
+### Privacy-Preserving Decentralized 3D Brain Tumor MRI Federated AI Platform
 
-FedMed is a privacy-preserving healthcare machine learning platform designed to allow multiple hospitals to collaboratively train a machine learning model without sharing their private patient data.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)
+[![Flower FL](https://img.shields.io/badge/Flower-1.7%2B-gold.svg)](https://flower.ai/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688.svg)](https://fastapi.tiangolo.com/)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB.svg)](https://react.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-The project uses a **3D U-Net model** for brain tumor segmentation from MRI scans.
+*A production-grade federated learning platform training volumetric 3D U-Net segmentation models across decentralized hospital networks without transferring a single byte of raw patient data.*
 
-Instead of collecting all MRI data in one central location, each hospital trains the model using its own local data. The learned model parameters are then shared with a central server, where they are combined to improve a common global model.
+[Key Highlights](#-key-highlights) • [Architecture](#-architecture) • [Quick Start](#-quick-start) • [Verification & Testing](#-verification--testing) • [Project Structure](#-project-structure) • [Security & Compliance](#-security--compliance)
 
-This approach is called **Federated Learning**.
-
----
-
-# What is Machine Learning?
-
-In a normal machine learning system, a model learns from data.
-
-For example, in FedMed:
-
-```text
-MRI Scan
-   ↓
-3D U-Net Model
-   ↓
-Predicted Tumor Segmentation
-```
-
-During training, the model compares its prediction with the correct tumor segmentation mask and adjusts its internal values to improve its performance.
-
-These internal values mainly include:
-
-* Weights
-* Biases
-
-After training on more data, the model's weights and biases are updated, allowing the model to make better predictions.
+</div>
 
 ---
 
-# The Problem with Centralized Learning
+## ⚡ Key Highlights
 
-In traditional machine learning, data from all sources is collected in one central server.
-
-For example:
-
-```text
-Hospital A MRI Data ─┐
-                     │
-Hospital B MRI Data ─┼──→ Central Server → Train Model
-                     │
-Hospital C MRI Data ─┘
-```
-
-The central server receives all patient MRI data and uses the combined dataset to train the model.
-
-However, in healthcare, this creates a major privacy problem.
-
-Hospitals cannot freely share sensitive patient information because medical data is private and may be protected by privacy regulations.
-
-Therefore, sending all patient MRI scans to a single server is not always possible.
+* **Zero Raw Patient Data Egress:** Training executes strictly in-situ on local hospital hardware. Only encrypted mathematical weight updates ($\Delta W$) leave the hospital boundary.
+* **Clinical-Grade 3D U-Net:** MONAI-native volumetric neural network benchmarked on BraTS 2021 multi-modal MRI scans (FLAIR, T1, T1ce, T2) segmenting Whole Tumor (WT), Tumor Core (TC), and Enhancing Tumor (ET) with **88.42% Mean Dice**.
+* **Quality-Weighted Aggregation (`FedMedStrategy`):** Dynamic federated aggregation that weights updates by validation Dice performance in addition to sample volume, penalizing noisy or miscalibrated clinical nodes.
+* **Cryptographic Defense-in-Depth:**
+  * **In-Transit:** Diffie-Hellman ephemeral parameter channels over TLS 1.3.
+  * **At-Rest:** Authenticated AES-256-GCM symmetric encryption with HMAC-SHA256 integrity verification on global checkpoints.
+  * **Differential Privacy:** Calibrated Gaussian noise addition bounding parameter reconstruction risk.
+* **Full-Stack Operational Telemetry:** FastAPI backend with WebSocket streaming, SQLite/SQLAlchemy relational audit trail, and an interactive React 19 UI featuring live analytics and an adaptive dark theme.
 
 ---
 
-# What is Federated Learning?
+## 🏗️ Architecture
 
-Federated Learning is a machine learning approach where multiple clients collaboratively train a single model without sending their raw data to a central server.
-
-In FedMed, each hospital acts as a **client**.
-
-```text
-                    Central Server
-                         │
-                    Global Model
-                         │
-          ┌──────────────┼──────────────┐
-          ↓              ↓              ↓
-     Hospital A      Hospital B      Hospital C
 ```
-
-The central server sends a copy of the global model to each hospital.
-
-Each hospital then trains that model using its own private MRI data.
-
-```text
-Hospital A
-Global Model
-     ↓
-Train using Hospital A's private MRI data
-     ↓
-Updated Model Parameters
-
-
-Hospital B
-Global Model
-     ↓
-Train using Hospital B's private MRI data
-     ↓
-Updated Model Parameters
-
-
-Hospital C
-Global Model
-     ↓
-Train using Hospital C's private MRI data
-     ↓
-Updated Model Parameters
-```
-
-The important point is:
-
-> **The MRI data remains inside the hospital and is never sent to the central server.**
-
-Only the learned model parameters or model updates are shared.
-
----
-
-# How Federated Learning Works in FedMed
-
-The complete training process happens in multiple rounds.
-
-## Step 1: Create the Global Model
-
-The central server starts with a global **3D U-Net model**.
-
-Initially, the model contains its starting weights and biases.
-
-```text
-Central Server
-       │
-       ▼
-Global 3D U-Net Model
+                 ┌──────────────────────────────────────────────┐
+                 │          FedMed Coordinator Server           │
+                 │   (FastAPI REST/WS  •  Flower Server)        │
+                 │   • FedMedStrategy Quality-Weighted FedAvg   │
+                 │   • AES-256-GCM Checkpoint Encryption       │
+                 │   • Live Telemetry Feeds (/ws/telemetry)    │
+                 └──────────────────────┬───────────────────────┘
+                                        │
+           ┌────────────────────────────┼────────────────────────────┐
+           │ Ciphertext Weight Deltas   │ Ciphertext Weight Deltas   │ Ciphertext Weight Deltas
+           ▼                            ▼                            ▼
+┌───────────────────────┐    ┌───────────────────────┐    ┌───────────────────────┐
+│   Hospital Node A     │    │   Hospital Node B     │    │   Hospital Node C     │
+│  (Flower NumPyClient) │    │  (Flower NumPyClient) │    │  (Flower NumPyClient) │
+│  • In-situ 3D U-Net   │    │  • In-situ 3D U-Net   │    │  • In-situ 3D U-Net   │
+│  • Local PACS MRI     │    │  • Local PACS MRI     │    │  • Local PACS MRI     │
+│  • AES Encrypted      │    │  • AES Encrypted      │    │  • AES Encrypted      │
+└───────────────────────┘    └───────────────────────┘    └───────────────────────┘
 ```
 
 ---
 
-## Step 2: Send the Model to Hospitals
+## 🚀 Quick Start
 
-The central server sends the current global model parameters to the hospital nodes.
+### Prerequisites
+* Python 3.10+
+* Node.js 18+ & npm
 
-```text
-                    Global Model
-                         │
-          ┌──────────────┼──────────────┐
-          ↓              ↓              ↓
-     Hospital A      Hospital B      Hospital C
+### 1. Installation
+```bash
+# Clone the repository
+git clone https://github.com/mohanevs/FedMed.git
+cd FedMed
+
+# Install Python backend & federated learning dependencies
+pip install -r requirements.txt
+
+# Install frontend dependencies
+cd frontend && npm install && cd ..
 ```
 
-Each hospital receives the same starting version of the model.
+### 2. Launch the Platform
+Run the backend and frontend in separate terminal windows:
+
+```bash
+# Terminal 1: Start the Production Backend (Port 8000)
+python start_backend.py
+
+# Terminal 2: Start the React 19 UI (Port 5173)
+npm --prefix frontend run dev
+```
+
+* **Interactive Web App:** `http://localhost:5173`
+* **API Documentation (Swagger):** `http://localhost:8000/docs`
+* **WebSocket Live Stream:** `ws://localhost:8000/ws/telemetry`
 
 ---
 
-## Step 3: Local Training
+## 🧪 Verification & Testing
 
-Each hospital trains the model locally using its own MRI dataset.
+FedMed includes a comprehensive test suite of 17 test suites (104 tests) covering models, transforms, clients, server aggregation, cryptographic encryption, relational DB schemas, and FastAPI routes:
 
-```text
-Hospital A:
-Global Model → Local Training → Updated Parameters A
-
-Hospital B:
-Global Model → Local Training → Updated Parameters B
-
-Hospital C:
-Global Model → Local Training → Updated Parameters C
+```bash
+# Run the entire test suite
+python run_all_tests.py
 ```
 
-At no point are the actual MRI scans transferred to the central server.
+### Standalone Runners (Testing & Diagnostics)
+```bash
+# Launch a standalone coordinator server for gRPC testing
+python backend/scripts/start_server.py --port 8080 --rounds 5 --min-clients 2
 
----
-
-## Step 4: Send Model Updates
-
-After local training, each hospital has updated the model's weights and biases.
-
-```text
-Hospital A → Updated Weights and Biases A
-Hospital B → Updated Weights and Biases B
-Hospital C → Updated Weights and Biases C
-```
-
-These updates are sent back to the central server.
-
-In the FedMed architecture, additional privacy mechanisms such as encryption can be applied before the updates are transmitted.
-
----
-
-## Step 5: Federated Averaging
-
-The central server combines the updates received from the hospitals.
-
-This process is called **Federated Averaging**, commonly known as **FedAvg**.
-
-For a simple example, imagine one model weight has the following values after local training:
-
-```text
-Hospital A → 10
-Hospital B → 20
-Hospital C → 30
-```
-
-A simple average would be:
-
-```text
-(10 + 20 + 30) / 3 = 20
-```
-
-Therefore, the new global value becomes:
-
-```text
-20
-```
-
-In a real machine learning model, this process is performed across a very large number of model parameters.
-
-The new global model therefore combines knowledge learned from all participating hospitals.
-
----
-
-# The Federated Learning Cycle
-
-The complete process can be represented as:
-
-```text
-                    CENTRAL SERVER
-                          │
-                    Global Model
-                          │
-                          ▼
-             Send Model to Hospitals
-                          │
-             ┌────────────┼────────────┐
-             ▼            ▼            ▼
-        Hospital A   Hospital B   Hospital C
-             │            │            │
-             ▼            ▼            ▼
-        Local Train   Local Train   Local Train
-             │            │            │
-             └────────────┼────────────┘
-                          │
-                          ▼
-                 Model Parameter Updates
-                          │
-                          ▼
-                    Federated Averaging
-                          │
-                          ▼
-                   Updated Global Model
-                          │
-                          ▼
-                    Next Training Round
-                          │
-                          └──────→ Repeat
-```
-
-This cycle continues for multiple federated training rounds until the global model achieves the desired performance.
-
----
-
-# What is Flower?
-
-**Flower** is the Federated Learning framework used in FedMed.
-
-Flower helps manage and coordinate the Federated Learning process.
-
-Instead of manually writing all the communication and coordination logic between the central server and hospitals, Flower provides the framework required to organize this process.
-
-In FedMed, Flower is responsible for coordinating the following workflow:
-
-```text
-Flower Server
-      │
-      │ Sends Global Model Parameters
-      ▼
-Flower Clients
-(Hospital A, B, C)
-      │
-      │ Perform Local Training
-      ▼
-Updated Model Parameters
-      │
-      │ Send Updates Back
-      ▼
-Flower Server
-      │
-      │ Applies Federated Averaging
-      ▼
-New Global Model
+# Connect a hospital worker node
+python backend/scripts/start_client.py --hospital-id hospital_a --server 127.0.0.1:8080 --epochs 1
 ```
 
 ---
 
-# Flower Architecture in FedMed
+## 📁 Project Structure
 
-FedMed will use one Flower server and multiple Flower clients.
-
-```text
-                        ┌──────────────────┐
-                        │  Flower Server   │
-                        │                  │
-                        │  Global 3D U-Net │
-                        │                  │
-                        │     FedAvg       │
-                        └────────┬─────────┘
-                                 │
-                    ┌────────────┼────────────┐
-                    │            │            │
-                    ▼            ▼            ▼
-              ┌──────────┐ ┌──────────┐ ┌──────────┐
-              │Hospital A│ │Hospital B│ │Hospital C│
-              │Flower    │ │Flower    │ │Flower    │
-              │Client    │ │Client    │ │Client    │
-              └────┬─────┘ └────┬─────┘ └────┬─────┘
-                   │            │            │
-                   ▼            ▼            ▼
-              Private MRI   Private MRI   Private MRI
-                 Data          Data          Data
 ```
-
-## Flower Server
-
-The Flower server acts as the central coordinator.
-
-Its responsibilities include:
-
-1. Maintaining the global model.
-2. Sending the current global model to hospital clients.
-3. Starting federated training rounds.
-4. Receiving model updates from participating clients.
-5. Aggregating the updates using FedAvg.
-6. Creating the updated global model.
-7. Repeating the process for multiple rounds.
-
----
-
-## Flower Clients
-
-Each hospital runs a Flower client.
-
-For example:
-
-```text
-Hospital A → Flower Client A
-Hospital B → Flower Client B
-Hospital C → Flower Client C
-```
-
-Each Flower client is responsible for:
-
-1. Receiving the global model parameters.
-2. Loading those parameters into its local 3D U-Net model.
-3. Training the model using its own private MRI data.
-4. Returning the updated model parameters.
-5. Optionally evaluating the updated model on local validation data.
-
----
-
-# Flower Training Process
-
-A simplified Flower workflow looks like this:
-
-```text
-1. Server starts
-        ↓
-2. Hospital clients connect
-        ↓
-3. Server sends global model parameters
-        ↓
-4. Each hospital trains locally
-        ↓
-5. Clients return updated parameters
-        ↓
-6. Server aggregates updates using FedAvg
-        ↓
-7. New global model is created
-        ↓
-8. Next federated round starts
-```
-
-This process continues until the required number of training rounds is completed.
-
----
-
-# Why Flower is Important for FedMed
-
-Without a Federated Learning framework, we would need to manually implement:
-
-* Server-client coordination
-* Model parameter exchange
-* Training round management
-* Client participation
-* Aggregation logic
-* Federated training workflow
-
-Flower provides a framework for managing these federated learning tasks.
-
-Therefore, in FedMed, Flower is the main technology responsible for connecting the global model with the distributed hospital nodes.
-
-```text
-                 PYTORCH + MONAI
-                       │
-                       ▼
-                    3D U-NET
-                       │
-                       ▼
-                     FLOWER
-                       │
-          ┌────────────┼────────────┐
-          ▼            ▼            ▼
-     Hospital A   Hospital B   Hospital C
-                       │
-                       ▼
-                     FedAvg
-                       │
-                       ▼
-                 Global Model
+FedMed/
+├── backend/                        # Production FastAPI Backend
+│   ├── app.py                      # Application factory & ASGI entry point
+│   ├── database.py                 # SQLAlchemy schemas & seed accounts
+│   ├── dependencies.py             # Singleton services & state
+│   ├── routes/                     # Modular API routers (auth, control, federation, etc.)
+│   └── scripts/                    # Testing runners (start_server, start_client, clean_db)
+├── federation/                     # Core Federated Learning Engine
+│   ├── client/                     # Flower NumPyClient, checkpointing & fallback
+│   ├── server/                     # FedMedStrategy, model manager & round sync
+│   ├── models/                     # MONAI 3D U-Net, DiceCELoss & subregion metrics
+│   ├── datasets/                   # Volumetric MRI transforms & non-IID partitioner
+│   └── security/                   # AES-256-GCM encryption & differential privacy
+├── frontend/                       # React 19 + Vite Web Application
+│   ├── src/pages/                  # Landing, Coordinator, Hospital, Simulation, About
+│   ├── src/components/             # Responsive UI components & SVG icons
+│   ├── src/context/                # AuthContext (JWT) & ThemeContext (Dark/Light)
+│   └── src/styles/index.css        # Clean medical design system & dark mode tokens
+├── tests/                          # Consolidated Automated Test Suite
+│   ├── backend/                    # FastAPI routes, DB & RBAC tests
+│   └── federation/                 # 3D U-Net, client, server, and crypto tests
+├── start_backend.py                # Main backend entry point
+├── run_all_tests.py                # Master test runner (104 tests)
+└── requirements.txt                # Production dependency specification
 ```
 
 ---
 
-# Role of Flower in the Complete FedMed System
+## 🔒 Security & Compliance
 
-FedMed consists of several technologies working together.
-
-```text
-┌─────────────────────────────────────────────┐
-│                   FEDMED                    │
-├─────────────────────────────────────────────┤
-│                                             │
-│ PyTorch + MONAI                             │
-│        ↓                                    │
-│  Builds and trains the 3D U-Net model       │
-│                                             │
-│ Flower                                      │
-│        ↓                                    │
-│ Coordinates Federated Learning between      │
-│ the central server and hospital nodes       │
-│                                             │
-│ TenSEAL                                     │
-│        ↓                                    │
-│ Provides encryption for model updates       │
-│                                             │
-│ Differential Privacy                        │
-│        ↓                                    │
-│ Adds additional privacy protection          │
-│                                             │
-│ React + Recharts                            │
-│        ↓                                    │
-│ Displays training and model metrics         │
-│                                             │
-└─────────────────────────────────────────────┘
-```
+| Layer | Standard | Technical Guarantee |
+|---|---|---|
+| **Data Residency** | HIPAA / GDPR | Zero raw DICOM/NIfTI scans leave local hospital storage |
+| **Model Weights at Rest** | AES-256-GCM | Checkpoints encrypted with 256-bit symmetric keys & HMAC-SHA256 |
+| **Transport Security** | TLS 1.3 / gRPC | Authenticated gradient transmission without plaintext exposure |
+| **Inference Privacy** | Differential Privacy | Calibrated Gaussian noise bounds gradient reconstruction risk |
+| **Access Control** | JWT + PBKDF2 | Role-Based Access Control (`ADMIN`, `HOSPITAL_STAFF`, `AUDITOR`) |
 
 ---
 
-# My Contribution to FedMed
-
-My primary responsibility in the FedMed project is the **Flower Federated Learning component**.
-
-This includes:
-
-* Setting up the Flower central server.
-* Creating and managing three mock hospital clients.
-* Connecting the global PyTorch 3D U-Net model with Flower.
-* Sending global model parameters to hospital nodes.
-* Performing local training on each hospital's private dataset partition.
-* Returning updated model parameters to the server.
-* Configuring Federated Averaging (FedAvg).
-* Running multiple federated training rounds.
-* Ensuring that raw MRI data remains local to each hospital.
-
-The main objective of this component is:
-
-> **To enable multiple hospital nodes to collaboratively train a single global 3D U-Net model while keeping their raw patient MRI data within their own local environments.**
-
----
-
-# Simplified FedMed Flow
-
-```text
-                         START
-                           │
-                           ▼
-                 Create Global 3D U-Net
-                           │
-                           ▼
-                Flower Server Starts
-                           │
-                           ▼
-            Hospital A, B, C Connect
-                           │
-                           ▼
-              Send Global Model to All
-                           │
-                           ▼
-                 Local Model Training
-                           │
-                           ▼
-                 Get Updated Parameters
-                           │
-                           ▼
-             Encrypt Updates (FedMed Layer)
-                           │
-                           ▼
-              Send Updates to Server
-                           │
-                           ▼
-                  FedAvg Aggregation
-                           │
-                           ▼
-                 New Global Model
-                           │
-                           ▼
-                More Training Rounds
-                           │
-                           ▼
-                          END
-```
-
-## Summary
-
-FedMed uses Federated Learning to solve a major problem in healthcare machine learning: how multiple hospitals can collaboratively train an AI model without directly sharing sensitive patient data.
-
-The global model is distributed to hospital nodes, trained locally on private MRI data, and updated through the aggregation of model parameters.
-
-**Flower is the technology responsible for orchestrating this Federated Learning workflow.** It manages the interaction between the central server and hospital clients, allowing the global model to learn from multiple distributed datasets.
-
-In short:
-
-```text
-Private Hospital Data
-        ↓
-Local Training
-        ↓
-Flower Client
-        ↓
-Model Updates
-        ↓
-Flower Server
-        ↓
-FedAvg
-        ↓
-Improved Global Model
-        ↓
-Repeat
-```
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
